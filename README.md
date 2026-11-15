@@ -1,8 +1,8 @@
 # FreeRDP configuration
 
 Standalone SDL FreeRDP configuration for Linux and macOS.
-Install FreeRDP with its SDL client (`sdl-freerdp`) using your package manager;
-on macOS use `brew install freerdp`. The optional machine picker uses `fzf`.
+Install FreeRDP with its SDL client (`sdl-freerdp`) using your package manager.
+The optional machine picker uses `fzf`.
 
 This repository supplies configuration and shell functions only. The parent
 dotfiles project owns dependency installation, linking, and shell setup.
@@ -24,6 +24,7 @@ When used as a submodule of the macOS dotfiles, `./install.sh --only freerdp`
 from the parent repository initializes this submodule and installs the links.
 
 ```sh
+rdp-add                          # Add a saved host interactively
 rdp workstation                  # Saved connection
 rdp                              # fzf picker of saved connections
 rdp --list                       # List saved names
@@ -32,16 +33,41 @@ rdp workstation -f               # Override fullscreen for this launch
 ```
 
 Defaults: `/f +clipboard +dynamic-resolution +auto-reconnect +grab-keyboard`.
-Override them after sourcing `rdp.zsh` (or in the macOS dotfiles' `~/.zshrc.local`) using a Zsh array, for example:
+Override them after sourcing `rdp.zsh` (or in the dotfiles' `~/.zshrc.local`) using a Zsh array, for example:
 
 ```zsh
 RDP_FLAGS=(/f +clipboard +dynamic-resolution +auto-reconnect +grab-keyboard /sound)
 ```
 
-Create a saved connection interactively with `rdp-add`. It prompts for a familiar
-name, host address (with optional port), username, and optional domain. Files are
-created with owner-only permissions, and existing names are never overwritten.
-Passwords are not stored. Cancel with Ctrl-C.
+## Add a host interactively
+
+After loading `rdp.zsh`, run `rdp-add` without arguments:
+
+```text
+% rdp-add
+Connection name (e.g. office-pc): office-pc
+Host address (optionally :port): 192.0.2.10:3389
+Username (DOMAIN\user is also accepted): CONTOSO\alice
+Domain (optional; Enter to skip):
+```
+
+The connection name becomes the filename, without needing to enter `.rdp`.
+Names must start with a letter or number and may contain letters, numbers,
+dots, underscores, and hyphens. Enter a hostname or IP address, optionally
+including a port. Usernames are saved literally, including backslashes.
+If the username already includes its domain, leave the separate domain empty.
+
+The function saves `office-pc.rdp` in
+`${RDP_PROFILE_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/freerdp/connections}`,
+creating the directory if necessary. Connect with `rdp office-pc`, or run `rdp`
+to pick it from the saved hosts.
+
+New profiles enable fullscreen, dynamic resolution, and clipboard sharing.
+Files have owner-only permissions (`0600`); existing names are never overwritten.
+Passwords are not requested or stored. Cancel with Ctrl-C; incomplete input
+is not saved.
+
+## Add a host manually
 
 Or create a saved connection manually:
 
@@ -63,14 +89,6 @@ it does not provide passwordless login on subsequent launches.
 
 Use `/f` to start fullscreen; the installed SDL client's default local shortcut
 is Right Shift + Return to toggle fullscreen (see `sdl-freerdp /help`).
-
-## Trackpad scrolling
-
-`sdl-freerdp.json` enables `UseLocalMouseScrollDirection` to use the local
-scroll direction rather than SDL FreeRDP's default normalization. Relaunch the
-client after changing it. This applies only to SDL FreeRDP and does not require
-the shell helper. It affects both scroll axes; non-natural wheel events are
-unaffected by this setting.
 
 ## Local connection data
 
