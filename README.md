@@ -38,7 +38,12 @@ Override them after sourcing `rdp.zsh` (or in the macOS dotfiles' `~/.zshrc.loca
 RDP_FLAGS=(/f +clipboard +dynamic-resolution +auto-reconnect +grab-keyboard /sound)
 ```
 
-Create a saved connection:
+Create a saved connection interactively with `rdp-add`. It prompts for a familiar
+name, host address (with optional port), username, and optional domain. Files are
+created with owner-only permissions, and existing names are never overwritten.
+Passwords are not stored. Cancel with Ctrl-C.
+
+Or create a saved connection manually:
 
 ```sh
 mkdir -p ~/.config/freerdp/connections

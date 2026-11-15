@@ -45,3 +45,44 @@ rdp() {
     command sdl-freerdp "/v:$target" "${RDP_FLAGS[@]}" "$@"
   fi
 }
+
+# Run in a subshell so umask and noclobber stay local to this operation.
+rdp-add() (
+  local profile_dir=${RDP_PROFILE_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/freerdp/connections}
+  local name address username domain target
+  if (( $# )); then
+    print -r -- 'Usage: rdp-add (interactively save a named RDP connection)'
+    return 0
+  fi
+  read -r 'name?Connection name (e.g. office-pc): ' || return 1
+  if [[ -z $name || $name != [a-zA-Z0-9]* || $name == *[^a-zA-Z0-9._-]* ]]; then
+    print -u2 -- 'Use letters, numbers, dots, underscores, or hyphens; start with a letter or number.'
+    return 1
+  fi
+  target=$profile_dir/$name.rdp
+  if [[ -e $target || -L $target ]]; then
+    print -u2 -r -- "Connection already exists: $target"
+    return 1
+  fi
+  read -r 'address?Host address (optionally :port): ' || return 1
+  read -r 'username?Username (DOMAIN\user is also accepted): ' || return 1
+  read -r 'domain?Domain (optional; Enter to skip): ' || return 1
+  if [[ -z $address || -z $username || $address == *[[:space:]]* ||
+        $username == *$'\r'* || $domain == *$'\r'* ]]; then
+    print -u2 -- 'An address without whitespace and a username are required; carriage returns are not allowed.'
+    return 1
+  fi
+  umask 077
+  mkdir -p -- "$profile_dir" || return 1
+  setopt noclobber
+  {
+    print -r -- "full address:s:$address"
+    print -r -- "username:s:$username"
+    print -r -- "domain:s:$domain"
+    print -r -- 'screen mode id:i:2'
+    print -r -- 'dynamic resolution:i:1'
+    print -r -- 'redirectclipboard:i:1'
+  } > "$target" || return 1
+  print -r -- "Saved $target"
+  print -r -- "Connect with: rdp $name"
+)
