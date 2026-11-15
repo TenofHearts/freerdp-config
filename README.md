@@ -4,8 +4,13 @@ Standalone SDL FreeRDP configuration for Linux and macOS.
 Install FreeRDP with its SDL client (`sdl-freerdp`) using your package manager;
 on macOS use `brew install freerdp`. The optional machine picker uses `fzf`.
 
-Run `./install.sh` from this repository to link the shared configuration into
-`${XDG_CONFIG_HOME:-~/.config}/freerdp`. Existing files are preserved.
+This repository supplies configuration and shell functions only. The parent
+dotfiles project owns dependency installation, linking, and shell setup.
+Link these files individually into `${XDG_CONFIG_HOME:-~/.config}/freerdp`:
+
+- `sdl-freerdp.json` — SDL client preferences.
+- `rdp.zsh` — optional Zsh connection functions and default flags.
+- `connection.rdp.example` — template for machine-local connections.
 The JSON configuration is loaded by SDL FreeRDP directly; no shell function
 is needed for its scroll setting. Close and relaunch the client after changes.
 
@@ -16,7 +21,7 @@ source "${XDG_CONFIG_HOME:-$HOME/.config}/freerdp/rdp.zsh"
 ```
 
 When used as a submodule of the macOS dotfiles, `./install.sh --only freerdp`
-from the parent repository installs the links instead.
+from the parent repository initializes this submodule and installs the links.
 
 ```sh
 rdp workstation                  # Saved connection
@@ -65,5 +70,5 @@ unaffected by this setting.
 ## Local connection data
 
 Personal `.rdp` profiles and passwords are not tracked in this repository.
-The installer links individual files so existing FreeRDP certificates,
-connection profiles, and other runtime data remain local.
+The parent dotfiles project should link individual files so existing FreeRDP
+certificates, connection profiles, and other runtime data remain local.
