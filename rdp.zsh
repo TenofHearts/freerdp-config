@@ -1,6 +1,14 @@
 # Shared defaults; override this array in ~/.zshrc.local.
 typeset -ga RDP_FLAGS
-RDP_FLAGS=(/f +clipboard +dynamic-resolution +auto-reconnect +grab-keyboard)
+RDP_FLAGS=(
+  /dynamic-resolution
+  /grab-keyboard
+  /sound
+  /microphone
+  +clipboard
+  /drive:MacShare,"$HOME/Downloads"
+  +auto-reconnect
+)
 
 # Saved connections are ordinary .rdp files, kept outside the dotfiles repo.
 rdp() {
@@ -82,6 +90,7 @@ rdp-add() (
     print -r -- 'screen mode id:i:2'
     print -r -- 'dynamic resolution:i:1'
     print -r -- 'redirectclipboard:i:1'
+    print -r -- 'keyboardhook:i:1'
   } > "$target" || return 1
   print -r -- "Saved $target"
   print -r -- "Connect with: rdp $name"

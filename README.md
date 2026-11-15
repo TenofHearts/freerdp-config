@@ -32,11 +32,12 @@ rdp 192.0.2.10 /u:your-user       # Direct connection
 rdp workstation -f               # Override fullscreen for this launch
 ```
 
-Defaults: `/f +clipboard +dynamic-resolution +auto-reconnect +grab-keyboard`.
+Defaults: `/dynamic-resolution /grab-keyboard /sound /microphone +clipboard /drive:MacShare,"$HOME/Downloads" +auto-reconnect`.
+The Downloads directory is shared as `MacShare`.
 Override them after sourcing `rdp.zsh` (or in the dotfiles' `~/.zshrc.local`) using a Zsh array, for example:
 
 ```zsh
-RDP_FLAGS=(/f +clipboard +dynamic-resolution +auto-reconnect +grab-keyboard /sound)
+RDP_FLAGS=(/dynamic-resolution /grab-keyboard /sound /microphone +clipboard /drive:MacShare,"$HOME/Downloads" +auto-reconnect /f)
 ```
 
 ## Add a host interactively
@@ -62,7 +63,8 @@ The function saves `office-pc.rdp` in
 creating the directory if necessary. Connect with `rdp office-pc`, or run `rdp`
 to pick it from the saved hosts.
 
-New profiles enable fullscreen, dynamic resolution, and clipboard sharing.
+New profiles enable fullscreen, dynamic resolution, clipboard sharing, and
+remote Windows keyboard shortcuts (`keyboardhook:i:1`).
 Files have owner-only permissions (`0600`); existing names are never overwritten.
 Passwords are not requested or stored. Cancel with Ctrl-C; incomplete input
 is not saved.
