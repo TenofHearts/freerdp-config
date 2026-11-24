@@ -20,6 +20,10 @@ For optional Zsh shortcuts, add this to `.zshrc`, then reload Zsh:
 source "${XDG_CONFIG_HOME:-$HOME/.config}/freerdp/rdp.zsh"
 ```
 
+`rdp` uses `RDP_BIN` as the executable name or path. It defaults to
+`sdl-freerdp` (Homebrew); on CachyOS, set `export RDP_BIN=sdl-freerdp3`
+in your platform's `.zshrc`. Put command-line options in `RDP_FLAGS`, not `RDP_BIN`.
+
 When used as a submodule of the macOS dotfiles, `./install.sh --only freerdp`
 from the parent repository initializes this submodule and installs the links.
 

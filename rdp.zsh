@@ -12,6 +12,7 @@ RDP_FLAGS=(
 
 # Saved connections are ordinary .rdp files, kept outside the dotfiles repo.
 rdp() {
+  local client=${RDP_BIN:-sdl-freerdp}
   local profile_dir=${RDP_PROFILE_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/freerdp/connections}
   local target=${1:-} selected
   local -a profiles
@@ -45,12 +46,12 @@ rdp() {
     fi
   fi
   if [[ -f $target ]]; then
-    command sdl-freerdp "$target" "${RDP_FLAGS[@]}" "$@"
+    command "$client" "$target" "${RDP_FLAGS[@]}" "$@"
   elif [[ $target == *.rdp ]]; then
     print -u2 -r -- "Connection file not found: $target"
     return 1
   else
-    command sdl-freerdp "/v:$target" "${RDP_FLAGS[@]}" "$@"
+    command "$client" "/v:$target" "${RDP_FLAGS[@]}" "$@"
   fi
 }
 
